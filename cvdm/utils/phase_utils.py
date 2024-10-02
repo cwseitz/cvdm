@@ -1,19 +1,21 @@
+
 from typing import Optional, Sequence, Union
 
-import cupy as cp
+#import cupy as cp
 import numpy as np
-from cupy.fft import fftn, fftshift, ifftn, ifftshift
+#from cupy.fft import fftn, fftshift, ifftn, ifftshift
+from numpy.fft import fft,fftshift,ifft,ifftshift
 
 
 # If you encounter issues with cupy installation, you can use the numpy implementation of fft
-def easy_fft(data: np.ndarray, axes: Optional[Sequence[int]] = None) -> cp.ndarray:
+def easy_fft(data: np.ndarray, axes: Optional[Sequence[int]] = None) -> np.ndarray:
     """FFT that includes shifting."""
-    return fftshift(fftn(ifftshift(data, axes=axes), axes=axes), axes=axes)
+    return fftshift(fft(ifftshift(data, axes=axes), axes=axes), axes=axes)
 
 
-def easy_ifft(data: np.ndarray, axes: Optional[Sequence[int]] = None) -> cp.ndarray:
+def easy_ifft(data: np.ndarray, axes: Optional[Sequence[int]] = None) -> np.ndarray:
     """Inverse FFT that includes shifting."""
-    return ifftshift(ifftn(fftshift(data, axes=axes), axes=axes), axes=axes)
+    return ifftshift(ifft(fftshift(data, axes=axes), axes=axes), axes=axes)
 
 
 def light_component_sim(
@@ -39,7 +41,7 @@ def FresnelPropagator(
 
     k = np.fft.fftfreq(E0.shape[0], ps)
     kxx, kyy = np.meshgrid(k, k)
-    e_kxx = cp.asarray(np.expand_dims(kxx, 0))
+    e_kxx = np.asarray(np.expand_dims(kxx, 0))
     e_kyy = cp.asarray(np.expand_dims(kyy, 0))
     e_lam = cp.asarray(np.expand_dims(np.expand_dims(lambda0, -1), -1))
     E0 = cp.asarray(np.expand_dims(E0, 0))
