@@ -61,6 +61,7 @@ def main() -> None:
         "imagenet_sr",
         "biosr_phase",
         "imagenet_phase",
+        "loco",
         "other",
     ], "Possible tasks are biosr_sr, imagenet_sr, biosr_phase, imagenet_phase, other"
 
@@ -69,6 +70,7 @@ def main() -> None:
     dataset, x_shape, y_shape = prepare_dataset(task, data_config, training=True)
     val_dataset, x_shape, y_shape = prepare_dataset(task, data_config, training=False)
 
+    """
     dataset = dataset.shuffle(5000, reshuffle_each_iteration=False)
 
     val_len = eval_config.val_len
@@ -206,6 +208,7 @@ def main() -> None:
     if run is not None:
         run.stop()
 
+"""
 
 if __name__ == "__main__":
     main()

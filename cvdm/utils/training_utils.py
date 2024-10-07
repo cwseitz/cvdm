@@ -24,7 +24,12 @@ def prepare_dataset(
             n_samples=data_config.n_samples,
             im_size=data_config.im_size,
         )
-
+    elif task == "loco":
+        dataloader = LocoDataloader(
+            path=data_config.dataset_path,
+            n_samples=data_config.n_samples,
+            im_size=data_config.im_size,
+        )
     elif task == "imagenet_sr":
         dataloader = ImageDirDataloader(
             paths=np.array(list(Path(data_config.dataset_path).glob("*.JPEG"))),
