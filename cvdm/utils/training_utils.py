@@ -10,7 +10,7 @@ from cvdm.data.image_dir_dataloader import ImageDirDataloader
 from cvdm.data.npy_dataloader import NpyDataloader
 from cvdm.data.phase_2shot_dataloader import Phase2ShotDataloader
 from cvdm.data.phase_polychrome_dataloader import PhasePolychromeDataloader
-
+from cvdm.data.loco_dataloader import LocoDataLoader
 
 def prepare_dataset(
     task: str, data_config: DataConfig, training: bool
@@ -25,11 +25,14 @@ def prepare_dataset(
             im_size=data_config.im_size,
         )
     elif task == "loco":
-        dataloader = LocoDataloader(
+        dataloader = LocoDataLoader(
             path=data_config.dataset_path,
             n_samples=data_config.n_samples,
             im_size=data_config.im_size,
         )
+        x_channels = 1
+        y_channels = x_channels
+
     elif task == "imagenet_sr":
         dataloader = ImageDirDataloader(
             paths=np.array(list(Path(data_config.dataset_path).glob("*.JPEG"))),

@@ -69,20 +69,14 @@ def main() -> None:
     batch_size = data_config.batch_size
     dataset, x_shape, y_shape = prepare_dataset(task, data_config, training=True)
     val_dataset, x_shape, y_shape = prepare_dataset(task, data_config, training=False)
-
-    """
     dataset = dataset.shuffle(5000, reshuffle_each_iteration=False)
-
     val_len = eval_config.val_len
     val_dataset = val_dataset.take(val_len)
     dataset = dataset.skip(val_len)
-
     dataset = dataset.batch(batch_size, drop_remainder=True)
     val_dataset = val_dataset.batch(batch_size, drop_remainder=True)
-
     epochs = training_config.epochs
     generation_timesteps = eval_config.generation_timesteps
-
     print("Creating model...")
     models = instantiate_cvdm(
         lr=training_config.lr,
@@ -120,11 +114,11 @@ def main() -> None:
         cumulative_loss = np.zeros(5)
     step = 0
     run_id = str(uuid.uuid4())
-    for _ in trange(epochs):
+    for ep in trange(epochs):
         for batch in dataset:
             batch_x, batch_y = batch
-
-            cmap = "gray" if task in ["biosr_phase", "imagenet_phase"] else None
+            print(f'Epoch {ep}, Step: {step}')
+            cmap = "gray" if task in ["loco", "biosr_phase", "imagenet_phase"] else None
             cumulative_loss += train_on_batch_cvdm(
                 batch_x, batch_y, joint_model, diff_inp=diff_inp
             )
@@ -208,7 +202,6 @@ def main() -> None:
     if run is not None:
         run.stop()
 
-"""
 
 if __name__ == "__main__":
     main()

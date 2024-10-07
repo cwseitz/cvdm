@@ -3,7 +3,7 @@ import numpy as np
 from cvdm.utils.data_utils import center_crop
 from skimage.io import imread, imsave
 
-class LocoDataloader:
+class LocoDataLoader:
     def __init__(
         self,
         path: str,
@@ -12,6 +12,7 @@ class LocoDataloader:
     ) -> None:
         self._x = imread(f"{path}/lr.tif")[:n_samples]
         self._y = imread(f"{path}/hr.tif")[:n_samples]
+        print(self._x.shape,self._y.shape)
         self._im_size = im_size
         self._n_samples: int = min(n_samples, self._x.shape[0])
 
@@ -42,10 +43,10 @@ class LocoDataloader:
                 center_y - self._im_size // 2 : center_y + self._im_size // 2,
                 center_x - self._im_size // 2 : center_x + self._im_size // 2,
             ]
+        """
         if len(x.shape) == 2:
             x = np.expand_dims(x, -1)
             y = np.expand_dims(y, -1)
-        """
         return x, y
 
     def __call__(self) -> Iterator[Tuple[np.ndarray, np.ndarray]]:
