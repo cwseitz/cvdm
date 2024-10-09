@@ -1,4 +1,4 @@
-task: "biosr_sr"
+task: "loco"
 
 model:
   noise_model_type: "unet"
@@ -11,23 +11,23 @@ model:
 
 training:
   lr: 0.0001
-  epochs: 10
+  epochs: 50
   
 eval:
-  output_path: "outputs/biosr"
+  output_path: "/N/slate/cwseitz/cvdm/Sim_CMOS-256-1000-500-0-1p0-0p5"
   generation_timesteps: 200
   checkpoint_freq: 1000
   log_freq: 10
   image_freq: 100
   val_freq: 200
-  val_len: 100
+  val_len: 10
 
 data:
-  dataset_path: "/bigdata/casus/MLID/maria/biosr_sample"
-  n_samples: 100
+  dataset_path: "/N/slate/cwseitz/cvdm/Sim_CMOS-256-1000-500-0-1p0-0p5/"
+  n_samples: 500
   batch_size: 2
   im_size: 256
 
 neptune:
   name: "CVDM"
-  project: "mlid/test"
+  project: "cwseitz/test"

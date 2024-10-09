@@ -2,6 +2,7 @@ import argparse
 import uuid
 from collections import defaultdict
 from typing import Dict
+from skimage.io import imsave
 
 import neptune as neptune
 import numpy as np
@@ -20,6 +21,7 @@ from cvdm.utils.inference_utils import (
     log_metrics,
     obtain_output_montage_and_metrics,
     save_output_montage,
+    ddpm_obtain_sr_img
 )
 from cvdm.utils.training_utils import prepare_dataset, prepare_model_input
 
@@ -41,9 +43,10 @@ def main() -> None:
     data_config = create_data_config(config)
     eval_config = create_eval_config(config)
     neptune_config = create_neptune_config(config)
-
+    print(model_config)
     task = config.get("task")
     assert task in [
+        "loco",
         "biosr_sr",
         "imagenet_sr",
         "biosr_phase",
@@ -72,7 +75,6 @@ def main() -> None:
         joint_model.load_weights(model_config.load_weights)
     if model_config.load_mu_weights is not None and mu_model is not None:
         mu_model.load_weights(model_config.load_mu_weights)
-
     run = None
     if args.neptune_token is not None and neptune_config is not None:
         run = neptune.init_run(
@@ -95,13 +97,30 @@ def main() -> None:
         batch_x, batch_y = batch
 
         cmap = (
-            "gray" if task in ["biosr_phase", "imagenet_phase", "hcoco_phase"] else None
+            "gray" if task in ["loco", "biosr_phase", "imagenet_phase", "hcoco_phase"] else None
         )
         model_input = prepare_model_input(batch_x, batch_y, diff_inp=diff_inp)
         cumulative_loss += joint_model.evaluate(
             model_input, np.zeros_like(batch_y), verbose=0
         )
 
+        #print('Saving at: ' + output_path)
+        for sample in range(20):
+            pred_diff, gamma_vec, _ = ddpm_obtain_sr_img(
+                batch_x,
+                generation_timesteps,
+                noise_model,
+                schedule_model,
+                mu_model,
+                batch_y.shape,
+            )
+            pred_diff = np.clip(pred_diff, -1, 1)
+            imsave(output_path+f'/z-{step}-{sample}.tif', np.squeeze(pred_diff)[0])
+            imsave(output_path+f'/x-{step}-{sample}.tif', np.squeeze(batch_x)[0])
+            imsave(output_path+f'/y-{step}-{sample}.tif', np.squeeze(batch_y)[0])        
+        step += 1
+        
+        """
         output_montage, metrics = obtain_output_montage_and_metrics(
             batch_x,
             batch_y.numpy(),
@@ -112,6 +131,7 @@ def main() -> None:
             diff_inp,
             task,
         )
+
         for metric_name, metric_value in metrics.items():
             cumulative_metrics[metric_name] += metric_value * batch_size
         total_samples += batch_size
@@ -123,6 +143,7 @@ def main() -> None:
     }
 
     log_metrics(run, average_metrics, prefix="val")
+    print('Saving to ' + output_path)
     save_output_montage(
         run=run,
         output_montage=output_montage,
@@ -134,10 +155,10 @@ def main() -> None:
     )
     print("Loss: ", cumulative_loss)
     log_loss(run=run, avg_loss=cumulative_loss / (step + 1), prefix="val")
+    """
 
     if run is not None:
         run.stop()
-
 
 if __name__ == "__main__":
     main()
