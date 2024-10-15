@@ -14,7 +14,7 @@ training:
   epochs: 50
   
 eval:
-  output_path: "/N/slate/cwseitz/cvdm/Sim_CMOS-256-1000-1000-0-1p0-0p5"
+  output_path: "/N/slate/cwseitz/cvdm/2x/Sim_CMOS-256-1000-1000-0-1p0-1p0"
   generation_timesteps: 200
   checkpoint_freq: 1000
   log_freq: 10
@@ -23,7 +23,7 @@ eval:
   val_len: 10
 
 data:
-  dataset_path: "/N/slate/cwseitz/cvdm/Sim_CMOS-256-1000-1000-0-1p0-0p5/"
+  dataset_path: "/N/slate/cwseitz/cvdm/2x/Sim_CMOS-256-1000-1000-0-1p0-1p0/"
   n_samples: 500
   batch_size: 2
   im_size: 256

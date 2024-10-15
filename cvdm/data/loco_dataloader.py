@@ -12,7 +12,6 @@ class LocoDataLoader:
     ) -> None:
         self._x = imread(f"{path}/lr.tif")[:n_samples]
         self._y = imread(f"{path}/hr.tif")[:n_samples]
-        print(self._x.shape,self._y.shape)
         self._im_size = im_size
         self._n_samples: int = min(n_samples, self._x.shape[0])
 
@@ -24,9 +23,10 @@ class LocoDataLoader:
 
     def __getitem__(self, idx: int) -> Tuple[np.ndarray, np.ndarray]:
         x, y = self._x[idx], self._y[idx]
+        x = center_crop(x, crop_size=256)
+        y = center_crop(y, crop_size=256)
+        #x = x[:256,:256]; y = y[:256,:256]
         """
-        x = center_crop(x, crop_size=2000)
-        y = center_crop(y, crop_size=2000)
         if x.shape[0] > self._im_size or x.shape[1] > self._im_size:
             center_x = np.random.randint(
                 self._im_size // 2, x.shape[1] - self._im_size // 2

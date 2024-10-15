@@ -3,7 +3,7 @@ task: "loco"
 model:
   noise_model_type: "unet"
   alpha: 0.001
-  load_weights: null
+  load_weights: "/N/slate/cwseitz/cvdm/Sim/2x/Sim_CMOS-256-1000-100-0-1p0-1p0/weights/model_12000_dee0f081-9b7e-49ff-b559-0b7195e681d6.h5" 
   load_mu_weights: null
   snr_expansion_n: 1
   zmd: False
@@ -14,7 +14,7 @@ training:
   epochs: 50
   
 eval:
-  output_path: "/N/slate/cwseitz/cvdm/Sim/2x/Sim_CMOS-256-500-750-0-1p25-1p0"
+  output_path: "/N/slate/cwseitz/cvdm/Nup96/2x/sum1"
   generation_timesteps: 200
   checkpoint_freq: 1000
   log_freq: 10
@@ -23,8 +23,8 @@ eval:
   val_len: 10
 
 data:
-  dataset_path: "/N/slate/cwseitz/cvdm/Sim/2x/Sim_CMOS-256-500-750-0-1p25-1p0/"
-  n_samples: 500
+  dataset_path: "/N/slate/cwseitz/cvdm/Nup96/2x/sum1/"
+  n_samples: 400
   batch_size: 2
   im_size: 256
 
