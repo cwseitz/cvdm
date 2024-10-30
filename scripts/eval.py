@@ -105,7 +105,7 @@ def main() -> None:
         )
 
         #print('Saving at: ' + output_path)
-        for sample in range(20):
+        for sample in range(1):
             pred_diff, gamma_vec, _ = ddpm_obtain_sr_img(
                 batch_x,
                 generation_timesteps,
