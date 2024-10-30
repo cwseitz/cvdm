@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from psf.psf2d.psf2d import *
+from ..psf.psf2d.psf2d import *
 from scipy.stats import poisson
 
 class Density:
@@ -17,6 +17,17 @@ class Disc(Density):
         radius = self.radius*np.sqrt(np.random.uniform(0, 1, n))
         x = radius * np.cos(theta)
         y = radius * np.sin(theta)
+        return x, y
+
+class Uniform(Density):
+    """Uniform distribution"""
+    def __init__(self,size,edgew=5.0):
+        super().__init__()
+        self.size=size
+        self.edgew = edgew
+    def sample(self,n):
+        x = np.random.uniform(self.edgew,self.size-self.edgew,n)
+        y = np.random.uniform(self.edgew,self.size-self.edgew,n)
         return x, y
        
 class Generator:
@@ -35,14 +46,13 @@ class Generator:
         ax[0].set_ylim([0,adu.shape[1]])
         ax[0].set_aspect(1.0)
         ax[0].invert_yaxis()
-        plt.savefig('/home/cwseitz/Desktop/Generation.png',dpi=300)
         plt.show()
 
         
-    def sample_frames(self,theta,nframes,texp,eta,N0,B0,gain,offset,var,show=False):
+    def sample_frames(self,theta,nframes,texp,eta,B0,gain,offset,var,show=False):
         _adu = []; _spikes = []
         for n in range(nframes):
-            muS = self._mu_s(theta,texp=texp,eta=eta,N0=N0)
+            muS = self._mu_s(theta,texp=texp,eta=eta)
             S = self.shot_noise(muS)
             if B0 is not None:
                 muB = self._mu_b(B0)
@@ -61,16 +71,13 @@ class Generator:
         adu = np.squeeze(np.array(_adu))
         spikes = np.squeeze(np.array(_spikes))
         return adu,spikes
-    def _mu_s(self,theta,texp=1.0,eta=1.0,N0=1.0,patch_hw=3):
+    def _mu_s(self,theta,texp=1.0,eta=1.0,patch_hw=3):
         x = np.arange(0,2*patch_hw); y = np.arange(0,2*patch_hw)
         X,Y = np.meshgrid(x,y,indexing='ij')
         mu = np.zeros((self.nx,self.ny),dtype=np.float32)
         ntheta,nspots = theta.shape
-        i0 = eta*N0*texp
         for n in range(nspots):
             x0,y0,sigma,N0 = theta[:,n]
-            #N0 = np.clip(np.random.normal(250.0,100.0),20.0,None)
-            N0 = np.random.uniform(500.0,1000.0)
             i0 = eta*N0*texp
             patchx, patchy = int(round(x0))-patch_hw, int(round(y0))-patch_hw
             x0p = x0-patchx; y0p = y0-patchy

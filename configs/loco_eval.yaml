@@ -14,7 +14,7 @@ training:
   epochs: 50
   
 eval:
-  output_path: "/N/slate/cwseitz/cvdm/Sim/4x/Sim"
+  output_path: "/N/slate/cwseitz/cvdm/Sim/4x/Sim/eval"
   generation_timesteps: 200
   checkpoint_freq: 1000
   log_freq: 10
@@ -23,7 +23,7 @@ eval:
   val_len: 10
 
 data:
-  dataset_path: "/N/slate/cwseitz/cvdm/Sim/4x/Sim/"
+  dataset_path: "/N/slate/cwseitz/cvdm/Sim/4x/Sim/eval_data/"
   n_samples: 10
   batch_size: 1
   im_size: 256
