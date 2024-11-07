@@ -5,17 +5,17 @@ import numpy as np
 import os
 
 
-savepath = '/N/slate/cwseitz/cvdm/Sim/4x/Sim/eval_data/'
+savepath = '/N/slate/cwseitz/cvdm/Sim/4x/Sim-5/eval_data/'
 os.makedirs(savepath,exist_ok=True)
 os.makedirs(savepath+'coords',exist_ok=True)
 
 size_lr = 64
-nsamples = 500
+nsamples = 6
 sigma_kde = 1.0
 
 kwargs = {
 'B0':0,
-'N0_min':500.0,
+'N0_min':100.0,
 'N0_max':1000.0,
 'eta':1.0,
 'sigma':1.0,
@@ -28,14 +28,13 @@ generator = Uniform2D(size_lr)
 dataset = TrainDataset(nsamples)
 
 X,Z,S,thetas = dataset.make_dataset(generator,kwargs,show=False,upsample=4,
-sigma_kde=sigma_kde,N_min=10.0,N_max=100.0)
+sigma_kde=sigma_kde,N_min=500.0,N_max=501.0)
 
 for n,theta in enumerate(thetas):
     np.savez(savepath+f'coords/coords-{n}.npz',theta=theta)
 
 imsave(savepath+'lr-1x.tif',X)
 imsave(savepath+f'hr.tif',Z)
-#bg = rolling_ball(X,radius=20)
 X = X-kwargs['offset']
 imsave(savepath+'lr-1x-sub.tif',X)
 X[X < 0.0] = 0
@@ -56,6 +55,7 @@ for n in range(nsamples):
 X4x = np.array(X4x)
 X4x= X4x.astype(np.float32)
 imsave(savepath+'lr.tif',X4x)
+print(X4x.shape,Z.shape)
 
 
 

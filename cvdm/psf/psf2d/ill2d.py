@@ -2,9 +2,10 @@ import numpy as np
 import warnings
 from .psf2d import *
 
-def isologlike2d(theta,adu,eta=1.0,texp=1.0,gain=1.0,offset=100.0,var=5.0):
+def isologlike2d(theta,adu,cam_params):
     nx,ny = adu.shape
-    x0,y0,N0 = theta; sigma=0.92
+    x0,y0,N0 = theta; sigma=1.0
+    eta,texp,gain,offset,var = cam_params
     X,Y = np.meshgrid(np.arange(0,nx),np.arange(0,ny),indexing='ij')
     lam = lamx(X,x0,sigma)*lamy(Y,y0,sigma)
     i0 = gain*eta*texp*N0

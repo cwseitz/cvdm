@@ -104,8 +104,8 @@ def main() -> None:
             model_input, np.zeros_like(batch_y), verbose=0
         )
 
-        #print('Saving at: ' + output_path)
-        for sample in range(1):
+        print('Saving at: ' + output_path)
+        for sample in range(data_config.n_samples):
             pred_diff, gamma_vec, _ = ddpm_obtain_sr_img(
                 batch_x,
                 generation_timesteps,

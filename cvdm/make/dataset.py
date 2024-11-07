@@ -26,7 +26,7 @@ class TrainDataset:
             Z = BasicKDE(theta).forward(nx,upsample=upsample,sigma=sigma_kde)
             Z = rescale_intensity(Z,out_range=self.Z_type)
             Xs.append(X); Zs.append(Z); Ss.append(S)
-            thetas.append(theta)
+            thetas.append(G[2])
             if show:
                 fig,ax=plt.subplots(1,2)
                 ax[0].imshow(X,cmap='gray')
